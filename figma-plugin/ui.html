@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<style>
+  body { font: 12px -apple-system, system-ui, sans-serif; margin: 12px; color: #333; }
+  label { display: block; margin: 8px 0 3px; font-weight: 600; }
+  input, textarea { width: 100%; box-sizing: border-box; padding: 6px; border: 1px solid #ccc; border-radius: 5px; font-size: 12px; }
+  textarea { height: 90px; font-family: monospace; }
+  button { margin-top: 8px; padding: 7px 12px; border: 0; border-radius: 6px; background: #18a0fb; color: #fff; font-weight: 600; cursor: pointer; }
+  .sec { color: #888; font-weight: 400; }
+  hr { border: 0; border-top: 1px solid #eee; margin: 14px 0; }
+  #msg { margin-top: 8px; color: #666; }
+</style>
+
+<label>URL do SVG <span class="sec">(servidor local)</span></label>
+<input id="url" value="http://localhost:8787/latest.svg" />
+<button id="fetchBtn">Buscar e inserir</button>
+
+<hr />
+
+<label>…ou cole o SVG <span class="sec">(qualquer máquina)</span></label>
+<textarea id="svg" placeholder="<svg …></svg>"></textarea>
+<button id="pasteBtn">Colar e inserir</button>
+
+<div id="msg"></div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const post = (m) => parent.postMessage({ pluginMessage: m }, '*');
+
+  $('fetchBtn').onclick = async () => {
+    const url = $('url').value.trim();
+    $('msg').textContent = 'buscando…';
+    try {
+      const r = await fetch(url, { cache: 'no-store' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const svg = await r.text();
+      post({ type: 'svg', svg });
+    } catch (e) {
+      // fallback: deixa o lado do plugin tentar (networkAccess vale lá)
+      post({ type: 'fetch', url });
+    }
+  };
+
+  $('pasteBtn').onclick = () => {
+    const svg = $('svg').value.trim();
+    if (!svg) { $('msg').textContent = 'cole o SVG primeiro'; return; }
+    post({ type: 'svg', svg });
+  };
+
+  onmessage = (e) => {
+    const m = e.data.pluginMessage;
+    if (m && m.error) $('msg').textContent = 'erro: ' + m.error;
+  };
+</script>

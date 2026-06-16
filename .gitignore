@@ -1,0 +1,6 @@
+# SVGs gerados (artefatos)
+out/*.svg
+# logs locais
+*.log
+# node
+node_modules/

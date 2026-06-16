@@ -26,6 +26,12 @@ bash page2figma.sh http://localhost:3000 "#app"
 Sem servidor / outra máquina: abra `out/latest.svg`, copie o conteúdo e use o
 campo **"…ou cole o SVG"** do plugin.
 
+### Volta (Figma → código)
+Depois de editar no Figma, selecione o frame e no plugin clique
+**"Exportar pro Claude"**: ele exporta a seleção como SVG e faz `POST` pro
+servidor local, que grava em `out/from-figma.svg`. Quem for implementar é só ler
+esse arquivo (valores exatos de posição/cor/texto). Sem seleção, exporta a página.
+
 ## Peças
 - `convert.js` — DOM → SVG (Playwright headless). `node convert.js <url> [out.svg] [seletor]`
 - `serve.js` — servidor estático mínimo da pasta `out/` na porta 8787

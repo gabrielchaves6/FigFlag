@@ -21,6 +21,11 @@
 <textarea id="svg" placeholder="<svg …></svg>"></textarea>
 <button id="pasteBtn">Colar e inserir</button>
 
+<hr />
+
+<label>Voltar pro Claude <span class="sec">(exporta a seleção/página)</span></label>
+<button id="exportBtn">Exportar pro Claude</button>
+
 <div id="msg"></div>
 
 <script>
@@ -47,8 +52,23 @@
     post({ type: 'svg', svg });
   };
 
-  onmessage = (e) => {
+  $('exportBtn').onclick = () => {
+    $('msg').textContent = 'exportando…';
+    post({ type: 'export' });
+  };
+
+  onmessage = async (e) => {
     const m = e.data.pluginMessage;
-    if (m && m.error) $('msg').textContent = 'erro: ' + m.error;
+    if (!m) return;
+    if (m.error) { $('msg').textContent = 'erro: ' + m.error; return; }
+    if (m.type === 'exported') {
+      try {
+        const svg = new TextDecoder().decode(new Uint8Array(m.bytes));
+        const r = await fetch('http://localhost:8787/upload?name=from-figma.svg', { method: 'POST', body: svg });
+        $('msg').textContent = r.ok ? 'enviado pro Claude ✓ (out/from-figma.svg)' : 'falha no envio: HTTP ' + r.status;
+      } catch (err) {
+        $('msg').textContent = 'servidor local no ar? ' + err.message;
+      }
+    }
   };
 </script>

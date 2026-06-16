@@ -33,6 +33,11 @@ exatos) e **PNG 2x** (print) e faz `POST` pro servidor local, gravando em
 `out/from-figma.svg` e `out/from-figma.png`. Quem for implementar lê esses
 arquivos. Sem seleção, exporta a página inteira.
 
+## Ícone
+`figma-plugin/icon.svg` (+ `icon-128.png`): logo do Figma + burst do Claude
+ligados por uma conexão tracejada (a assinatura do FigFlag). Use ao publicar o
+plugin ou como identidade visual.
+
 ## Peças
 - `convert.js` — DOM → SVG (Playwright headless). `node convert.js <url> [out.svg] [seletor]`
 - `serve.js` — servidor estático mínimo da pasta `out/` na porta 8787

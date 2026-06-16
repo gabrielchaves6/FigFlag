@@ -19,7 +19,7 @@ bash page2figma.sh http://localhost:3000
 #    opcional: capturar só um trecho via seletor CSS
 bash page2figma.sh http://localhost:3000 "#app"
 
-# 2) no Figma (arquivo aberto): Plugins → Development → "Página → SVG"
+# 2) no Figma (arquivo aberto): Plugins → Development → "FigFlag"
 #    → "Buscar e inserir"  (busca http://127.0.0.1:8787/latest.svg)
 ```
 
@@ -27,10 +27,11 @@ Sem servidor / outra máquina: abra `out/latest.svg`, copie o conteúdo e use o
 campo **"…ou cole o SVG"** do plugin.
 
 ### Volta (Figma → código)
-Depois de editar no Figma, selecione o frame e no plugin clique
-**"Exportar pro Claude"**: ele exporta a seleção como SVG e faz `POST` pro
-servidor local, que grava em `out/from-figma.svg`. Quem for implementar é só ler
-esse arquivo (valores exatos de posição/cor/texto). Sem seleção, exporta a página.
+Depois de editar no Figma, selecione o que quiser e no plugin **FigFlag** clique
+**"Exportar pro Claude (SVG + PNG)"**: ele exporta a seleção como **SVG** (valores
+exatos) e **PNG 2x** (print) e faz `POST` pro servidor local, gravando em
+`out/from-figma.svg` e `out/from-figma.png`. Quem for implementar lê esses
+arquivos. Sem seleção, exporta a página inteira.
 
 ## Peças
 - `convert.js` — DOM → SVG (Playwright headless). `node convert.js <url> [out.svg] [seletor]`

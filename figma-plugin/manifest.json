@@ -1,6 +1,6 @@
 {
-  "name": "Página → SVG",
-  "id": "page-to-figma-svg-importer",
+  "name": "FigFlag",
+  "id": "figflag",
   "api": "1.0.0",
   "main": "code.js",
   "ui": "ui.html",

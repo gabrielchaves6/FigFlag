@@ -21,12 +21,13 @@ figma.ui.onmessage = async (msg) => {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       insertSvg(await res.text());
     } else if (msg.type === 'export') {
-      // VOLTA: exporta a seleção (ou a página) como SVG e manda pra UI fazer o POST
+      // VOLTA: exporta a seleção (ou a página) como SVG + PNG (print 2x) e manda pra UI postar
       const sel = figma.currentPage.selection;
       const node = sel.length ? sel[0] : figma.currentPage;
       if (!node.exportAsync) throw new Error('seleção não exportável');
-      const bytes = await node.exportAsync({ format: 'SVG' });
-      figma.ui.postMessage({ type: 'exported', bytes: Array.from(bytes) });
+      const svg = await node.exportAsync({ format: 'SVG' });
+      const png = await node.exportAsync({ format: 'PNG', constraint: { type: 'SCALE', value: 2 } });
+      figma.ui.postMessage({ type: 'exported', svg: Array.from(svg), png: Array.from(png) });
     }
   } catch (e) {
     figma.ui.postMessage({ error: (e && e.message) ? e.message : String(e) });

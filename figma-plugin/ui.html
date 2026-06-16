@@ -23,8 +23,8 @@
 
 <hr />
 
-<label>Voltar pro Claude <span class="sec">(exporta a seleção/página)</span></label>
-<button id="exportBtn">Exportar pro Claude</button>
+<label>Voltar pro Claude <span class="sec">(exporta a seleção: SVG + PNG)</span></label>
+<button id="exportBtn">Exportar pro Claude (SVG + PNG)</button>
 
 <div id="msg"></div>
 
@@ -63,9 +63,12 @@
     if (m.error) { $('msg').textContent = 'erro: ' + m.error; return; }
     if (m.type === 'exported') {
       try {
-        const svg = new TextDecoder().decode(new Uint8Array(m.bytes));
-        const r = await fetch('http://localhost:8787/upload?name=from-figma.svg', { method: 'POST', body: svg });
-        $('msg').textContent = r.ok ? 'enviado pro Claude ✓ (out/from-figma.svg)' : 'falha no envio: HTTP ' + r.status;
+        const svg = new TextDecoder().decode(new Uint8Array(m.svg));
+        const r1 = await fetch('http://localhost:8787/upload?name=from-figma.svg', { method: 'POST', body: svg });
+        const r2 = await fetch('http://localhost:8787/upload?name=from-figma.png', { method: 'POST', body: new Uint8Array(m.png) });
+        $('msg').textContent = (r1.ok && r2.ok)
+          ? 'enviado pro Claude ✓ (SVG + PNG)'
+          : 'falha — svg HTTP ' + r1.status + ' / png HTTP ' + r2.status;
       } catch (err) {
         $('msg').textContent = 'servidor local no ar? ' + err.message;
       }
